@@ -1,109 +1,118 @@
 package unlam.edu.le;
 
-import java.util.ArrayList;
-
 public class Estanque {
-	private int superficie;
 	private int profundidad;
-	private int profundidadCaño;
+	private int superficie;
+	private int profundidadTuberiaDesdeSuperficie;
+	private int volumen;
+	private int profundidadTuberiaDerecho = -1;
+	private int profundidadTuberiaIzquierdo = -1;
 	private int profundidadMedida;
-	private boolean esUltimoEstanque;
-	private int volumenTotal;// solo valido para el primer estanque en ser llenado
-	private int estanquesTotales;// solo valido para el primer estanque
+	private int volumenHastaTuberiaDerecha = -1;
+	private int volumenHastaTuberiaIzquierda = -1;
 
-	public Estanque(int superficie, int profundidad, int distanciaCaño) {
-		this.superficie = superficie;
+	public Estanque(int superficie, int profundidad, int profundidadTuberia) {
 		this.profundidad = profundidad;
-		/*
-		 * ya que se mide la profundidad del caño desde la superficie se la resto a la
-		 * profundidad para obtener la medicion desde el fondo del estanque y facilitar
-		 * los calculos
-		 */
-		this.profundidadCaño = this.profundidad - distanciaCaño;
-		this.esUltimoEstanque = false;
-		estanquesTotales = 0;
-	}
+		this.superficie = superficie;
+		this.volumen = superficie * profundidad;
+		this.profundidadTuberiaDesdeSuperficie = profundidadTuberia;
 
-	public static ArrayList<Estanque> calcularVolumen(ArrayList<Estanque> listaEstanques) {
-		ArrayList<Estanque> estanques = new ArrayList<Estanque>();
-
-		estanques.addAll(listaEstanques);
-
-		int volumenTotal = estanques.get(0).getVolumenTotal();
-
-		for (Estanque e : estanques) {
-			if (!e.esUltimoEstanque) {
-				if (volumenTotal == (e.superficie * e.profundidadCaño)) {
-					e.profundidadMedida = e.profundidadCaño;
-					volumenTotal = 0;
-				} else if (volumenTotal < (e.superficie * e.profundidadCaño)) {
-					e.profundidadMedida = volumenTotal / e.superficie;
-					volumenTotal = 0;
-				} else {
-					e.profundidadMedida = e.profundidadCaño;
-					volumenTotal -= (e.superficie * e.profundidadCaño);
-				}
-			} else {
-				e.profundidadMedida = (volumenTotal / e.superficie) <= e.profundidad ? volumenTotal / e.superficie
-						: e.profundidad;
-				volumenTotal -= e.superficie * e.profundidadMedida;
-			}
-
-			estanques.get(0).estanquesTotales++;
-
-			if (volumenTotal <= 0) {
-				break;
-			}
+		if (profundidadTuberia >= 0) {
+			this.profundidadTuberiaDerecho = profundidad - profundidadTuberia;
+			volumenHastaTuberiaDerecha = superficie * profundidadTuberiaDerecho;
 		}
-
-		if (volumenTotal > 0) {
-			int i = estanques.size() - 1;
-
-			for (; i >= 0; i--) {
-				if (volumenTotal / estanques.get(i).superficie <= (estanques.get(i).profundidad
-						- estanques.get(i).profundidadMedida)) {
-					estanques.get(i).profundidadMedida += volumenTotal / estanques.get(i).superficie;
-					estanques.get(i).setVolumenTotal(0);
-					return estanques;
-				} else {
-					volumenTotal -= (estanques.get(i).superficie
-							* (estanques.get(i).profundidad - estanques.get(i).profundidadMedida));
-					estanques.get(i).profundidadMedida = estanques.get(i).profundidad;
-				}
-			}
-		}
-
-		estanques.get(0).setVolumenTotal(volumenTotal);
-		return estanques;
 	}
-
-	public int getEstanquesTotales() {
-		return estanquesTotales;
+	
+	public void setVolumenTuberiaIzquierda(int profundidadTuberiaIzquierda) {
+		this.profundidadTuberiaIzquierdo = this.profundidad - profundidadTuberiaIzquierda;
+		this.volumenHastaTuberiaIzquierda = this.profundidadTuberiaIzquierdo * this.superficie;
 	}
-
-	public boolean isEsUltimoEstanque() {
-		return esUltimoEstanque;
+	
+	public int getSuperficie() {
+		return superficie;
 	}
-
-	@Override
-	public String toString() {
-		return superficie + " " + profundidad + " " + profundidadCaño + " " + profundidadMedida + " " + esUltimoEstanque
-				+ "; " + volumenTotal;
-	}
-
+	
 	public int getProfundidadMedida() {
 		return profundidadMedida;
 	}
-
-	public void setEsUltimoEstanque(boolean esUltimoEstanque) {
-		this.esUltimoEstanque = esUltimoEstanque;
+	
+	public int getProfundidadMedidaDesdeFondo(){
+		return profundidad - profundidadMedida;
 	}
-
-	public int getVolumenTotal() {
-		return volumenTotal;
+	
+	public int getProfundidadTuberia() {
+		return profundidadTuberiaDesdeSuperficie;
 	}
-
-	public void setVolumenTotal(int volumenTotal) {
-		this.volumenTotal = volumenTotal;
+	
+	public int getVolumen() {
+		return volumen;
+	}
+	
+	public int getVolumenTuberiaDerecha() {
+		return volumenHastaTuberiaDerecha;
+	}
+	
+	public int getVolumenTuberiaIzquierda() {
+		return volumenHastaTuberiaIzquierda;
+	}
+	
+	public int llenarHastaTuberiaDerecha(int volumen) {
+		if(volumenHastaTuberiaDerecha >= volumen) {
+			this.volumen -= volumen;
+			volumen = 0;
+		}else {
+			this.volumen -= volumenHastaTuberiaDerecha;
+			volumen -= volumenHastaTuberiaDerecha;
+			volumenHastaTuberiaDerecha = 0;
+		}
+		
+		this.profundidadMedida = this.volumen / this.superficie;
+		
+		return volumen;
+	}
+	
+	public int llenarHastaTuberiaIzquierda(int volumen) {
+		if(volumenHastaTuberiaIzquierda >= volumen) {
+			this.volumen -= volumen;
+			volumen = 0;
+		}else{
+			this.volumen -= volumenHastaTuberiaIzquierda;
+			volumen -= volumenHastaTuberiaIzquierda;
+			volumenHastaTuberiaIzquierda = 0;
+		}
+		
+		this.profundidadMedida = this.volumen / this.superficie;
+		
+		return volumen;
+	}
+	
+	public int llenarHastaNivel(int nivel) {
+		if(nivel == 0)
+			nivel = profundidadMedida;
+		
+		int vol = superficie * nivel;
+		
+		if(nivel == profundidadTuberiaIzquierdo)
+			volumenHastaTuberiaIzquierda = 0;
+		
+		volumen -= vol;
+		profundidadMedida = volumen / superficie;
+		
+		return vol;
+	}
+	
+	public int llenar(int volumenRestante) {
+		if((this.profundidadTuberiaDerecho != -1 && this.profundidadTuberiaIzquierdo == -1) || (this.profundidadTuberiaDerecho < this.profundidadTuberiaIzquierdo && this.profundidadTuberiaDerecho != -1)) {
+			volumenRestante = llenarHastaTuberiaDerecha(volumenRestante);
+		}else if((this.profundidadTuberiaIzquierdo != -1 && this.profundidadTuberiaDerecho == -1) || (this.profundidadTuberiaDerecho > this.profundidadTuberiaIzquierdo && this.profundidadTuberiaIzquierdo != -1)) {
+			volumenRestante = llenarHastaTuberiaIzquierda(volumenRestante);
+		}
+			
+		return volumenRestante;
+	}
+	
+	@Override
+	public String toString() {
+		return "" + volumen;
 	}
 }

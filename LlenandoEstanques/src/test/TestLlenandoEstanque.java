@@ -1,44 +1,82 @@
 package test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-import unlam.edu.le.ArchivoDeEstanques;
-import unlam.edu.le.Estanque;
+import unlam.edu.le.LlenarEstanque;
 
 class TestLlenandoEstanque {
 	private String in = "src/test/LotesDePrueba/Entrada/";
 	private String out = "src/test/LotesDePrueba/Ejecucion/";
+	
+	@Test
+	public void llenarHastaTuberia() {
+		LlenarEstanque control = new LlenarEstanque();
+		
+		control.addEstanque(120, 7, 4);
+		control.addEstanque(80, 10, -1);
+		control.setVolumen(360);
+		Assert.assertEquals(0, control.llenar());
+	}
+	
+	@Test
+	public void llenarHastaTuberiaIzquierda() {
+		LlenarEstanque control = new LlenarEstanque();
+		
+		control.addEstanque(120, 7, 4);
+		control.addEstanque(80, 10, -1);
+		control.setVolumen(600);
+		Assert.assertEquals(0, control.llenar());
+	}
+	
+	@Test
+	public void llenarDosEstanquesCompletos() {
+		LlenarEstanque control = new LlenarEstanque();
+		
+		control.addEstanque(120, 7, 4);
+		control.addEstanque(80, 10, -1);
+		control.setVolumen(1640);
+		Assert.assertEquals(0, control.llenar());
+	}
+	
+	@Test
+	public void llenarTresEstanques() {
+		LlenarEstanque control = new LlenarEstanque();
+		
+		control.addEstanque(120, 7, 4);
+		control.addEstanque(80, 10, 2);
+		control.addEstanque(60, 5, -1);
+		control.setVolumen(1640);
+		Assert.assertEquals(0, control.llenar());
+	}
 
 	@Test
 	void prueba01CasoEjemplo01() throws FileNotFoundException {
-		ArrayList<Estanque> estanques = new ArrayList(ArchivoDeEstanques.leerArchivo(in + "01_CasoEjemplo1.in"));
-
-		ArchivoDeEstanques.escribirArchivo(out + "01_CasoEjemplo1.out", Estanque.calcularVolumen(estanques));
+		LlenarEstanque control = new LlenarEstanque(in + "01_CasoEjemplo1.in");
+		control.llenar();
+		control.escribirArchivo(out + "01_CasoEjemplo1.out");
 	}
 	
 	@Test
 	void prueba02CasoEjemplo02() throws FileNotFoundException {
-		ArrayList<Estanque> estanques = new ArrayList(ArchivoDeEstanques.leerArchivo(in + "02_CasoEjemplo2.in"));
-	
-		ArchivoDeEstanques.escribirArchivo(out + "02_CasoEjemplo2.out", Estanque.calcularVolumen(estanques));
+		LlenarEstanque control = new LlenarEstanque(in + "02_CasoEjemplo2.in");
+		control.llenar();
+		control.escribirArchivo(out + "02_CasoEjemplo2.out");
 	}
 	
 	@Test
 	void prueba03UnEstanque() throws FileNotFoundException {
-		ArrayList<Estanque> estanques = new ArrayList(ArchivoDeEstanques.leerArchivo(in + "03_UnEstanque.in"));
-
-		ArchivoDeEstanques.escribirArchivo(out + "03_UnEstanque.out", Estanque.calcularVolumen(estanques));
+		LlenarEstanque control = new LlenarEstanque(in + "03_UnEstanque.in");
+		control.llenar();
+		control.escribirArchivo(out + "03_UnEstanque.out");
 	}
 	
-	@Test
+	/*@Test
 	void prueba04EstanquesDeIgualesDimensiones() throws FileNotFoundException {
-		ArrayList<Estanque> estanques = new ArrayList(ArchivoDeEstanques.leerArchivo(in + "04_EstanquesDeIgualesDimensiones.in"));
-
-		ArchivoDeEstanques.escribirArchivo(out + "04_EstanquesDeIgualesDimensiones.out", Estanque.calcularVolumen(estanques));
-	}
+		LlenarEstanque control = new LlenarEstanque(in + "04_EstanquesDeIgualesDimensiones.in");
+		control.llenar();
+		control.escribirArchivo(out + "04_EstanquesDeIgualesDimensiones.out");
+	}*/
 }
