@@ -56,4 +56,17 @@ class PruebaConflictoEntreReinas {
 		
 		ArchivoDeReinas.escribir(reinas, out + "03_ConflictoConUnaReinaEnMismaDiagonal.out");
 	}
+	
+	@Test
+	void CasoFatiga() throws IOException {
+		ArrayList<Reina> reinas = new ArrayList<>();
+		
+		reinas = ArchivoDeReinas.leer(in + "04_casoFatiga.in");
+		
+		for(Reina i : reinas) {
+			i.conflicto(reinas);
+		}
+		
+		ArchivoDeReinas.escribir(reinas, out + "04_casoFatiga.out");
+	}
 }
